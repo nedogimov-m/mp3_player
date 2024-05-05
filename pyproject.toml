@@ -2,7 +2,7 @@
 name = "mp3-player"
 version = "0.1.0"
 description = ""
-authors = ["nedogimov-m <nedo.marat@yandex.ru>"]
+authors = ["nedogimov-m"]
 readme = "README.md"
 package-mode = false
 
