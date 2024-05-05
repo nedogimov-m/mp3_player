@@ -114,11 +114,8 @@ mp = MusicPlayer(root_tk)
 
 threads = [mp.check_playing,
            mp.check_dir]
-threads_active = []
 
 for thread in threads:
-    t = Thread(target=thread)
-    threads_active.append(t)
-    t.start()
+    Thread(target=thread).start()
 
 root_tk.mainloop()
