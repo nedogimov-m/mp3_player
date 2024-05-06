@@ -27,7 +27,9 @@ class MusicPlayer:
         pygame.init()
         pygame.mixer.init()
         self.track = StringVar()
+        self.track_status = StringVar()
         self.status = StringVar(value="-Не играет")
+        self.index = 0
 
         self.SONG_END = pygame.USEREVENT + 1
 
@@ -35,9 +37,11 @@ class MusicPlayer:
                                 fg="white", bd=5, relief=GROOVE)
         trackframe.place(x=0, y=0, width=600, height=100)
 
-        Label(trackframe, textvariable=self.track, width=20, font=("Arial", 24, "bold"),
-              bg="Orange", fg="gold").grid(row=0, column=0, padx=10, pady=5)
-        Label(trackframe, textvariable=self.status, font=("Arial", 18, "bold"), bg="orange",
+        self.track_l = Label(trackframe, textvariable=self.track_status, width=20, font=("Arial", 24, "bold"),
+                             bg="Orange", fg="gold")
+        self.track_l.grid(row=0, column=0, padx=10, pady=5)
+
+        Label(trackframe, textvariable=self.status, font=("Arial", 24, "bold"), bg="orange",
               fg="gold").grid(row=0, column=1, padx=1, pady=5)
 
         buttonframe = LabelFrame(self.root, text="Панель управления", font=("Arial", 15, "bold"), bg="grey",
@@ -51,13 +55,13 @@ class MusicPlayer:
         self.pause = Button(buttonframe, text="Пауза", command=self.pausesong, width=8, height=1,
                             font=("Arial", 16, "bold"), fg="navyblue", bg="pink")
 
-        self.pause.grid(row=0, column=1, padx=10, pady=5)
+        self.pause.grid(row=0, column=1, padx=0, pady=5)
 
         songsframe = LabelFrame(self.root, text="Плейлист", font=("Arial", 15, "bold"), bg="grey",
                                 fg="white", bd=5, relief=GROOVE)
         songsframe.place(x=600, y=0, width=400, height=200)
         scrol_y = Scrollbar(songsframe, orient=VERTICAL)
-        self.playlist = Listbox(songsframe, yscrollcommand=scrol_y.set, selectbackground="gold", selectmode=SINGLE,
+        self.playlist = Listbox(songsframe, yscrollcommand=scrol_y.set, selectbackground="black", selectmode=SINGLE,
                                 font=("Arial", 12, "bold"), bg="silver", fg="navyblue", bd=5, relief=GROOVE)
         scrol_y.pack(side=RIGHT, fill=Y)
         scrol_y.config(command=self.playlist.yview)
@@ -65,8 +69,10 @@ class MusicPlayer:
         os.chdir("songs/")
 
     def playsong(self):
+        self.track_status.set(self.playlist.get(ACTIVE))
         self.track.set(self.playlist.get(ACTIVE))
         self.status.set("-Играет")
+        self.update_track_label()
         self.pause.config(text="Пауза", command=self.pausesong, width=8, height=1,
                           font=("Arial", 16, "bold"), fg="navyblue", bg="pink")
         pygame.mixer.music.load(self.playlist.get(ACTIVE))
@@ -107,6 +113,14 @@ class MusicPlayer:
                     self.playlist.insert(END, track)
             old = songtracks
             time.sleep(0.5)
+
+    def update_track_label(self):
+        text = self.track.get() + " " + self.track.get()
+        self.track_status.set(text[self.index:self.index + 40])
+        self.index += 1
+        if self.index >= len(text):
+            self.index = 0
+        self.root.after(800, self.update_track_label)
 
 
 root_tk = CheckableTk()  # костыль
