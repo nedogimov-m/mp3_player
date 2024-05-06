@@ -46,7 +46,7 @@ class MusicPlayer:
 
         buttonframe = LabelFrame(self.root, text="Панель управления", font=("Arial", 15, "bold"), bg="grey",
                                  fg="white", bd=5, relief=GROOVE)
-        buttonframe.place(x=0, y=100, width=600, height=100)
+        buttonframe.place(x=0, y=100, width=300, height=100)
 
         Button(buttonframe, text="Проигрывать", command=self.playsong, width=10, height=1,
                font=("Arial", 16, "bold"), fg="navyblue", bg="pink").grid(row=0, column=0,
@@ -56,6 +56,17 @@ class MusicPlayer:
                             font=("Arial", 16, "bold"), fg="navyblue", bg="pink")
 
         self.pause.grid(row=0, column=1, padx=0, pady=5)
+
+        buttonframe_vol = LabelFrame(self.root, text="Громкость", font=("Arial", 15, "bold"), bg="grey",
+                                     fg="white", bd=5, relief=GROOVE)
+        buttonframe_vol.place(x=300, y=100, width=300, height=100)
+
+        self.volume_slider = Scale(buttonframe_vol, from_=0, to=1, resolution=0.01, orient=HORIZONTAL,
+                                   command=self.update_volume, width=4,
+                                   font=("Arial", 16, "bold"), fg="navyblue", bg="pink")
+        self.volume_slider.set(1)
+
+        self.volume_slider.grid(row=0, column=2, padx=10, pady=5)
 
         songsframe = LabelFrame(self.root, text="Плейлист", font=("Arial", 15, "bold"), bg="grey",
                                 fg="white", bd=5, relief=GROOVE)
@@ -92,6 +103,12 @@ class MusicPlayer:
         pygame.mixer.music.unpause()
         self.pause.config(text="Пауза", command=self.pausesong, width=8, height=1,
                           font=("Arial", 16, "bold"), fg="navyblue", bg="pink")
+
+    @staticmethod
+    def update_volume(value):
+        if not pygame.mixer.music.get_busy():
+            return
+        pygame.mixer.music.set_volume(float(value))
 
     def check_playing(self):
         while True:
