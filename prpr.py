@@ -30,6 +30,7 @@ class MusicPlayer:
         self.track_status = StringVar()
         self.status = StringVar(value="-Не играет")
         self.index = 0
+        self.pos = 0
 
         self.SONG_END = pygame.USEREVENT + 1
 
@@ -59,7 +60,7 @@ class MusicPlayer:
 
         buttonframe_vol = LabelFrame(self.root, text="Громкость", font=("Arial", 15, "bold"), bg="grey",
                                      fg="white", bd=5, relief=GROOVE)
-        buttonframe_vol.place(x=300, y=100, width=300, height=100)
+        buttonframe_vol.place(x=300, y=100, width=135, height=100)
 
         self.volume_slider = Scale(buttonframe_vol, from_=0, to=1, resolution=0.01, orient=HORIZONTAL,
                                    command=self.update_volume, width=4,
@@ -67,6 +68,15 @@ class MusicPlayer:
         self.volume_slider.set(1)
 
         self.volume_slider.grid(row=0, column=2, padx=10, pady=5)
+
+        buttonframe_sk = LabelFrame(self.root, text="Перемотка", font=("Arial", 15, "bold"), bg="grey",
+                                    fg="white", bd=5, relief=GROOVE)
+        buttonframe_sk.place(x=435, y=100, width=165, height=100)
+
+        Button(buttonframe_sk, text="-15с", command=self.m_15, width=5, height=1,
+               font=("Arial", 16, "bold"), fg="navyblue", bg="pink").grid(row=0, column=2, padx=2, pady=5)
+        Button(buttonframe_sk, text="+15с", command=self.p_15, width=5, height=1,
+               font=("Arial", 16, "bold"), fg="navyblue", bg="pink").grid(row=0, column=3, padx=0, pady=5)
 
         songsframe = LabelFrame(self.root, text="Плейлист", font=("Arial", 15, "bold"), bg="grey",
                                 fg="white", bd=5, relief=GROOVE)
@@ -109,6 +119,22 @@ class MusicPlayer:
         if not pygame.mixer.music.get_busy():
             return
         pygame.mixer.music.set_volume(float(value))
+
+    @staticmethod
+    def p_15():  # не работает
+        if pygame.mixer.music.get_busy():
+            current_pos = pygame.mixer.music.get_pos()
+            new_pos = current_pos + 15 * 1000.0
+            pygame.mixer.music.play(0, new_pos / 1000)
+
+    @staticmethod
+    def m_15():  # не работает
+        if pygame.mixer.music.get_busy():
+            current_pos = pygame.mixer.music.get_pos()
+            print(current_pos)
+            new_pos = max(current_pos - 15 * 1000.0, 0)
+            print(new_pos)
+            pygame.mixer.music.play(0, new_pos / 1000)
 
     def check_playing(self):
         while True:
