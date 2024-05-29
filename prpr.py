@@ -131,9 +131,7 @@ class MusicPlayer:
     def m_15():  # не работает
         if pygame.mixer.music.get_busy():
             current_pos = pygame.mixer.music.get_pos()
-            print(current_pos)
             new_pos = max(current_pos - 15 * 1000.0, 0)
-            print(new_pos)
             pygame.mixer.music.play(0, new_pos / 1000)
 
     def check_playing(self):
